@@ -34,16 +34,16 @@ class Snake:
                 if event.type == pygame.QUIT:
                     self.game_over = True
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
+                    if event.key in (pygame.K_DOWN, pygame.K_s):
                         self.x_speed = 0
                         self.y_speed = 10
-                    elif event.key == pygame.K_LEFT:
+                    elif event.key in (pygame.K_LEFT, pygame.K_a):
                         self.x_speed = -10
                         self.y_speed = 0
-                    elif event.key == pygame.K_UP:
+                    elif event.key in (pygame.K_UP, pygame.K_w):
                         self.x_speed = 0
                         self.y_speed = -10
-                    elif event.key == pygame.K_RIGHT:
+                    elif event.key in (pygame.K_RIGHT, pygame.K_d):
                         self.x_speed = 10
                         self.y_speed = 0
             self.display.fill(self.color['gray'])
@@ -54,7 +54,9 @@ class Snake:
                 self.reset_game()
             pygame.draw.rect(self.display, self.color['lime'], [self.x_pos, self.y_pos, 10, 10])
             pygame.display.update()
-            self.clock.tick(25)
+
+            # Runs game at 30 FPS
+            self.clock.tick(30)
 
     def reset_game(self):
         self.game_over = False
