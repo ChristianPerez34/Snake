@@ -1,4 +1,5 @@
 import pygame
+import random
 
 
 class Snake:
@@ -22,6 +23,10 @@ class Snake:
         # Snake will not move until an arrow key is pressed
         self.x_speed = 0
         self.y_speed = 0
+
+        # Snake food
+        self.food_x_pos = 0
+        self.food_y_pos = 0
     
     def start(self):
         pygame.display.update()
@@ -29,6 +34,10 @@ class Snake:
         self.play_game()
     
     def play_game(self):
+        self.generate_snake_food()
+        while self.food_x_pos == self.x_pos and self.food_y_pos == self.y_pos:
+            self.generate_snake_food()
+
         while not self.game_over:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -52,6 +61,7 @@ class Snake:
             if self.x_pos > self.display_width or self.x_pos < 0 or self.y_pos > self.display_height or self.y_pos < 0:
                 self.game_over = True
                 self.reset_game()
+            pygame.draw.rect(self.display, self.color['white'], [self.food_x_pos, self.food_y_pos, 10, 10])
             pygame.draw.rect(self.display, self.color['lime'], [self.x_pos, self.y_pos, 10, 10])
             pygame.display.update()
 
@@ -64,6 +74,11 @@ class Snake:
         self.y_pos = self.display_height / 2
         self.x_speed = 0
         self.y_speed = 0
+        self.generate_snake_food()
+    
+    def generate_snake_food(self):
+        self.food_x_pos = random.randrange(0, self.display_width, 10)
+        self.food_y_pos = random.randrange(0, self.display_height, 10)
 
 snake = Snake()
 snake.start()
