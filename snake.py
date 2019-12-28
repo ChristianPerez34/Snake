@@ -1,42 +1,68 @@
 import pygame
 
-game_over = False
-x_pos = 300
-y_pos = 300
-x_speed = 0
-y_speed = 0
 
-color = {
-    'lime': (0, 255, 0),
-    'white': (255, 255, 255)
-}
+class Snake:
 
-display = pygame.display.set_mode((800, 600))
-clock = pygame.time.Clock()
+    def __init__(self, *args, **kwargs):
+        self.game_over = False
+        self.display_width = 800
+        self.display_height = 600
+        self.color = {
+            'lime': (0, 255, 0),
+            'white': (255, 255, 255),
+            'gray': (128, 128, 128)
+        }
+        self.display = pygame.display.set_mode((self.display_width, self.display_height))
+        self.clock = pygame.time.Clock()
 
-pygame.display.update()
-pygame.display.set_caption('Lifeline Snake')
+        # Snake starts at the center of the display
+        self.x_pos = self.display_width / 2
+        self.y_pos = self.display_height / 2
 
-while not game_over:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            game_over = True
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                x_speed = 0
-                y_speed = 10
-            elif event.key == pygame.K_LEFT:
-                x_speed = -10
-                y_speed = 0
-            elif event.key == pygame.K_UP:
-                x_speed = 0
-                y_speed = -10
-            elif event.key == pygame.K_RIGHT:
-                x_speed = 10
-                y_speed = 0
-    x_pos += x_speed
-    y_pos += y_speed
-    display.fill(color['white'])
-    pygame.draw.rect(display, color['lime'], [x_pos, y_pos, 10, 10])
-    pygame.display.update()
-    clock.tick(25)
+        # Snake will not move until an arrow key is pressed
+        self.x_speed = 0
+        self.y_speed = 0
+    
+    def start(self):
+        pygame.display.update()
+        pygame.display.set_caption('Snake Block Eater')
+        self.play_game()
+    
+    def play_game(self):
+        while not self.game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.game_over = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        self.x_speed = 0
+                        self.y_speed = 10
+                    elif event.key == pygame.K_LEFT:
+                        self.x_speed = -10
+                        self.y_speed = 0
+                    elif event.key == pygame.K_UP:
+                        self.x_speed = 0
+                        self.y_speed = -10
+                    elif event.key == pygame.K_RIGHT:
+                        self.x_speed = 10
+                        self.y_speed = 0
+            self.display.fill(self.color['gray'])
+            self.x_pos += self.x_speed
+            self.y_pos += self.y_speed
+            if self.x_pos > self.display_width or self.x_pos < 0 or self.y_pos > self.display_height or self.y_pos < 0:
+                self.game_over = True
+                self.reset_game()
+            pygame.draw.rect(self.display, self.color['lime'], [self.x_pos, self.y_pos, 10, 10])
+            pygame.display.update()
+            self.clock.tick(25)
+
+    def reset_game(self):
+        self.game_over = False
+        self.x_pos = self.display_width / 2
+        self.y_pos = self.display_height / 2
+        self.x_speed = 0
+        self.y_speed = 0
+
+snake = Snake()
+snake.start()
+    
