@@ -8,17 +8,23 @@ class Snake:
         self.game_over = False
         self.display_width = 800
         self.display_height = 600
+        self.snake_length = 1
         self.color = {
             'lime': (0, 255, 0),
             'white': (255, 255, 255),
             'gray': (128, 128, 128)
         }
+
+        # Screen dimensions
         self.display = pygame.display.set_mode((self.display_width, self.display_height))
         self.clock = pygame.time.Clock()
 
         # Snake starts at the center of the display
         self.x_pos = self.display_width / 2
         self.y_pos = self.display_height / 2
+        self.snake = [
+            (self.x_pos, self.y_pos)
+        ]
 
         # Snake will not move until an arrow key is pressed
         self.x_speed = 0
@@ -58,11 +64,22 @@ class Snake:
             self.display.fill(self.color['gray'])
             self.x_pos += self.x_speed
             self.y_pos += self.y_speed
+            self.snake.append((self.x_pos, self.y_pos))
+
+            if self.x_pos == self.food_x_pos and self.y_pos == self.food_y_pos:
+                self.generate_snake_food()
+                self.snake_length += 1
+
+            if len(self.snake) > self.snake_length:
+                del self.snake[0]
+
             if self.x_pos > self.display_width or self.x_pos < 0 or self.y_pos > self.display_height or self.y_pos < 0:
                 self.game_over = True
                 self.reset_game()
+
             pygame.draw.rect(self.display, self.color['white'], [self.food_x_pos, self.food_y_pos, 10, 10])
-            pygame.draw.rect(self.display, self.color['lime'], [self.x_pos, self.y_pos, 10, 10])
+            for x,y in self.snake:
+                pygame.draw.rect(self.display, self.color['lime'], [x, y, 10, 10])
             pygame.display.update()
 
             # Runs game at 30 FPS
