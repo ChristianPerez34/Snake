@@ -87,6 +87,8 @@ class Snake:
 
     def reset_game(self):
         self.game_over = False
+        self.snake.clear()
+        self.snake_length = 1
         self.x_pos = self.display_width / 2
         self.y_pos = self.display_height / 2
         self.x_speed = 0
