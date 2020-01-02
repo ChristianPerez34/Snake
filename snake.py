@@ -9,6 +9,7 @@ class Snake:
         self.display_width = 800
         self.display_height = 600
         self.snake_length = 1
+        self.prev_key = None
         self.color = {
             'lime': (0, 255, 0),
             'white': (255, 255, 255),
@@ -50,17 +51,13 @@ class Snake:
                     self.game_over = True
                 if event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_DOWN, pygame.K_s):
-                        self.x_speed = 0
-                        self.y_speed = 10
+                        self.move_down(event.key)
                     elif event.key in (pygame.K_LEFT, pygame.K_a):
-                        self.x_speed = -10
-                        self.y_speed = 0
+                        self.move_left(event.key)
                     elif event.key in (pygame.K_UP, pygame.K_w):
-                        self.x_speed = 0
-                        self.y_speed = -10
+                        self.move_up(event.key)
                     elif event.key in (pygame.K_RIGHT, pygame.K_d):
-                        self.x_speed = 10
-                        self.y_speed = 0
+                        self.move_right(event.key)
             self.display.fill(self.color['gray'])
             self.x_pos += self.x_speed
             self.y_pos += self.y_speed
@@ -84,6 +81,30 @@ class Snake:
 
             # Runs game at 30 FPS
             self.clock.tick(30)
+
+    def move_right(self, event_key):
+        if self.snake_length == 1 or self.prev_key not in (pygame.K_LEFT, pygame.K_a):
+            self.x_speed = 10
+            self.y_speed = 0
+            self.prev_key = event_key
+        
+    def move_left(self, event_key):
+        if self.snake_length == 1 or self.prev_key not in (pygame.K_RIGHT, pygame.K_d):
+            self.x_speed = -10
+            self.y_speed = 0
+            self.prev_key = event_key
+
+    def move_down(self, event_key):
+        if self.snake_length == 1 or self.prev_key not in (pygame.K_UP, pygame.K_w):
+            self.x_speed = 0
+            self.y_speed = 10
+            self.prev_key = event_key
+    
+    def move_up(self, event_key):
+        if self.snake_length == 1 or self.prev_key not in (pygame.K_DOWN, pygame.K_s):
+            self.x_speed = 0
+            self.y_speed = -10
+            self.prev_key = event_key
 
     def reset_game(self):
         self.game_over = False
