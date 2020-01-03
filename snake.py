@@ -9,6 +9,7 @@ class Snake:
         self.display_width = 800
         self.display_height = 600
         self.snake_length = 1
+        self.score = 0
         self.prev_key = None
         self.color = {
             'lime': (0, 255, 0),
@@ -17,7 +18,8 @@ class Snake:
         }
 
         # Screen dimensions
-        self.display = pygame.display.set_mode((self.display_width, self.display_height))
+        self.display = pygame.display.set_mode(
+            (self.display_width, self.display_height))
         self.clock = pygame.time.Clock()
 
         # Snake starts at the center of the display
@@ -34,12 +36,12 @@ class Snake:
         # Snake food
         self.food_x_pos = 0
         self.food_y_pos = 0
-    
+
     def start(self):
         pygame.display.update()
-        pygame.display.set_caption('Snake Block Eater')
+        self.update_caption()
         self.play_game()
-    
+
     def play_game(self):
         self.generate_snake_food()
         while self.food_x_pos == self.x_pos and self.food_y_pos == self.y_pos:
@@ -66,6 +68,8 @@ class Snake:
             if self.x_pos == self.food_x_pos and self.y_pos == self.food_y_pos:
                 self.generate_snake_food()
                 self.snake_length += 1
+                self.score += 10
+                self.update_caption()
 
             if len(self.snake) > self.snake_length:
                 del self.snake[0]
@@ -74,9 +78,11 @@ class Snake:
                 self.game_over = True
                 self.reset_game()
 
-            pygame.draw.rect(self.display, self.color['white'], [self.food_x_pos, self.food_y_pos, 10, 10])
-            for x,y in self.snake:
-                pygame.draw.rect(self.display, self.color['lime'], [x, y, 10, 10])
+            pygame.draw.rect(self.display, self.color['white'], [
+                             self.food_x_pos, self.food_y_pos, 10, 10])
+            for x, y in self.snake:
+                pygame.draw.rect(
+                    self.display, self.color['lime'], [x, y, 10, 10])
             pygame.display.update()
 
             # Runs game at 30 FPS
@@ -87,7 +93,7 @@ class Snake:
             self.x_speed = 10
             self.y_speed = 0
             self.prev_key = event_key
-        
+
     def move_left(self, event_key):
         if self.snake_length == 1 or self.prev_key not in (pygame.K_RIGHT, pygame.K_d):
             self.x_speed = -10
@@ -99,7 +105,7 @@ class Snake:
             self.x_speed = 0
             self.y_speed = 10
             self.prev_key = event_key
-    
+
     def move_up(self, event_key):
         if self.snake_length == 1 or self.prev_key not in (pygame.K_DOWN, pygame.K_s):
             self.x_speed = 0
@@ -114,12 +120,17 @@ class Snake:
         self.y_pos = self.display_height / 2
         self.x_speed = 0
         self.y_speed = 0
+        self.score = 0
         self.generate_snake_food()
-    
+        self.update_caption()
+
     def generate_snake_food(self):
         self.food_x_pos = random.randrange(0, self.display_width, 10)
         self.food_y_pos = random.randrange(0, self.display_height, 10)
 
+    def update_caption(self):
+        pygame.display.set_caption(f'Snake Block Eater | Score: {self.score}')
+
+
 snake = Snake()
 snake.start()
-    
