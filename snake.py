@@ -1,5 +1,6 @@
 import pygame
 import random
+from food import Food
 
 
 class Snake:
@@ -33,9 +34,7 @@ class Snake:
         self.x_speed = 0
         self.y_speed = 0
 
-        # Snake food
-        self.food_x_pos = 0
-        self.food_y_pos = 0
+        self.snake_food = Food(display_width=self.display_width, display_height=self.display_height)
 
     def start(self):
         pygame.display.update()
@@ -43,9 +42,9 @@ class Snake:
         self.play_game()
 
     def play_game(self):
-        self.generate_snake_food()
-        while self.food_x_pos == self.x_pos and self.food_y_pos == self.y_pos:
-            self.generate_snake_food()
+        self.snake_food.generate_food()
+        while (self.snake_food.x_pos, self.snake_food.y_pos) in self.snake:
+            self.snake_food.generate_food()
 
         while not self.game_over:
             for event in pygame.event.get():
@@ -65,8 +64,8 @@ class Snake:
             self.y_pos += self.y_speed
             self.snake.append((self.x_pos, self.y_pos))
 
-            if self.x_pos == self.food_x_pos and self.y_pos == self.food_y_pos:
-                self.generate_snake_food()
+            if self.x_pos == self.snake_food.x_pos and self.y_pos == self.snake_food.y_pos:
+                self.snake_food.generate_food()
                 self.snake_length += 1
                 self.score += 10
                 self.update_caption()
@@ -79,7 +78,7 @@ class Snake:
                 self.reset_game()
 
             pygame.draw.rect(self.display, self.color['white'], [
-                             self.food_x_pos, self.food_y_pos, 10, 10])
+                             self.snake_food.x_pos, self.snake_food.y_pos, 10, 10])
             for x, y in self.snake:
                 pygame.draw.rect(
                     self.display, self.color['lime'], [x, y, 10, 10])
@@ -121,12 +120,8 @@ class Snake:
         self.x_speed = 0
         self.y_speed = 0
         self.score = 0
-        self.generate_snake_food()
+        self.snake_food.generate_food()
         self.update_caption()
-
-    def generate_snake_food(self):
-        self.food_x_pos = random.randrange(0, self.display_width, 10)
-        self.food_y_pos = random.randrange(0, self.display_height, 10)
 
     def update_caption(self):
         pygame.display.set_caption(f'Snake Block Eater | Score: {self.score}')
