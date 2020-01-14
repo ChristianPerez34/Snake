@@ -1,27 +1,14 @@
 import pygame
 import random
 from food import Food
+from app import App
 
 
-class Snake:
+class Snake(App):
 
     def __init__(self, *args, **kwargs):
-        self.game_over = False
-        self.display_width = 800
-        self.display_height = 600
+        super().__init__(*args, **kwargs)
         self.snake_length = 1
-        self.score = 0
-        self.prev_key = None
-        self.color = {
-            'lime': (0, 255, 0),
-            'white': (255, 255, 255),
-            'gray': (128, 128, 128)
-        }
-
-        # Screen dimensions
-        self.display = pygame.display.set_mode(
-            (self.display_width, self.display_height))
-        self.clock = pygame.time.Clock()
 
         # Snake starts at the center of the display
         self.x_pos = self.display_width / 2
@@ -37,8 +24,7 @@ class Snake:
         self.snake_food = Food(display_width=self.display_width, display_height=self.display_height)
 
     def start(self):
-        pygame.display.update()
-        self.update_caption()
+        super().start()
         self.play_game()
 
     def play_game(self):
@@ -123,8 +109,7 @@ class Snake:
         self.snake_food.generate_food()
         self.update_caption()
 
-    def update_caption(self):
-        pygame.display.set_caption(f'Snake Block Eater | Score: {self.score}')
+    
 
 
 snake = Snake()
