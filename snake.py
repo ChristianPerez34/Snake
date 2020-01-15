@@ -54,9 +54,9 @@ class Snake(App):
                 del self.snake[0]
 
             if (
-                self.x_pos > self.display_width
+                self.x_pos > self.display_width - 10
                 or self.x_pos < 0
-                or self.y_pos > self.display_height
+                or self.y_pos > self.display_height - 10
                 or self.y_pos < 0
                 or self.snake_length != len(list(set(s for s in self.snake)))
             ):
