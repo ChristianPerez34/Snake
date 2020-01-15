@@ -1,11 +1,11 @@
 import pygame
 import random
+import time
 from food import Food
 from app import App
 
 
 class Snake(App):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.snake_length = 1
@@ -13,15 +13,15 @@ class Snake(App):
         # Snake starts at the center of the display
         self.x_pos = self.display_width / 2
         self.y_pos = self.display_height / 2
-        self.snake = [
-            (self.x_pos, self.y_pos)
-        ]
+        self.snake = [(self.x_pos, self.y_pos)]
 
         # Snake will not move until an arrow key is pressed
         self.x_speed = 0
         self.y_speed = 0
 
-        self.snake_food = Food(display_width=self.display_width, display_height=self.display_height)
+        self.snake_food = Food(
+            display_width=self.display_width, display_height=self.display_height
+        )
 
     def start(self):
         super().start()
@@ -45,29 +45,42 @@ class Snake(App):
                         self.move_up(event.key)
                     elif event.key in (pygame.K_RIGHT, pygame.K_d):
                         self.move_right(event.key)
-            self.display.fill(self.color['gray'])
+            self.display.fill(self.color["gray"])
             self.x_pos += self.x_speed
             self.y_pos += self.y_speed
             self.snake.append((self.x_pos, self.y_pos))
 
-            if self.x_pos == self.snake_food.x_pos and self.y_pos == self.snake_food.y_pos:
-                self.snake_food.generate_food()
-                self.snake_length += 1
-                self.score += 10
-                self.update_caption()
-
             if len(self.snake) > self.snake_length:
                 del self.snake[0]
 
-            if self.x_pos > self.display_width or self.x_pos < 0 or self.y_pos > self.display_height or self.y_pos < 0:
+            if (
+                self.x_pos > self.display_width
+                or self.x_pos < 0
+                or self.y_pos > self.display_height
+                or self.y_pos < 0
+                or self.snake_length != len(list(set(s for s in self.snake)))
+            ):
+                time.sleep(0.5)
                 self.game_over = True
+                print(f"Final score: {self.score}")
                 self.reset_game()
 
-            pygame.draw.rect(self.display, self.color['white'], [
-                             self.snake_food.x_pos, self.snake_food.y_pos, 10, 10])
+            if (
+                self.x_pos == self.snake_food.x_pos
+                and self.y_pos == self.snake_food.y_pos
+            ):
+                self.snake_food.generate_food()
+                self.snake_length += 1
+                self.score += 1
+                self.update_caption()
+
+            pygame.draw.rect(
+                self.display,
+                self.color["white"],
+                [self.snake_food.x_pos, self.snake_food.y_pos, 10, 10],
+            )
             for x, y in self.snake:
-                pygame.draw.rect(
-                    self.display, self.color['lime'], [x, y, 10, 10])
+                pygame.draw.rect(self.display, self.color["lime"], [x, y, 10, 10])
             pygame.display.update()
 
             # Runs game at 30 FPS
@@ -108,8 +121,6 @@ class Snake(App):
         self.score = 0
         self.snake_food.generate_food()
         self.update_caption()
-
-    
 
 
 snake = Snake()
