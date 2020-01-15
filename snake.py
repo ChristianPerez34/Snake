@@ -1,8 +1,10 @@
-import pygame
 import random
 import time
-from food import Food
+
+import pygame
+
 from app import App
+from food import Food
 
 
 class Snake(App):
